@@ -7,7 +7,8 @@ function App() {
   function apiGet() {
     DataService.get("datasets")
       .then((response) => {
-        console.log('Raw API Response:', response);
+        console.log("Full API Response:", response);
+        console.log("API Data Structure:", response.data);
         setApiData(response.data);
       })
       .catch((error) => {
@@ -21,8 +22,16 @@ function App() {
 
       {apiData && (
         <div>
-          <h2>Data from NOAA API:</h2>
-          <pre>{JSON.stringify(apiData, null, 2)}</pre>
+          <h2>Datasets:</h2>
+          <ul>
+            {Object.entries(apiData).map(([key, dataset]) => (
+              <li key={key}>
+                <strong>Name:</strong> {dataset.name},
+                <strong>ID:</strong> {dataset.id},
+                <strong>Coverage:</strong> {dataset.datacoverage}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
