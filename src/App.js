@@ -1,37 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DataService from "./api/DataService";
 
 function App() {
-  const [apiData, setApiData] = useState(null);
+  const [apiData, setApiData] = useState({ results: [] });
 
   function apiGet() {
     DataService.get("datasets")
       .then((response) => {
         console.log("Full API Response:", response);
-        console.log("API Data Structure:", response.data);
+        console.log("API Data Structure", Object.keys(response.data || {}));
         setApiData(response.data);
       })
       .catch((error) => {
         console.log(error.message);
       });
   }
+
+  useEffect(() => {
+    apiGet();
+  }, []);
+
   return (
     <div>
       <h1>Data Service</h1>
       <button onClick={apiGet}>Load Data</button>
 
-      {apiData && (
+      {apiData.results && (
         <div>
           <h2>Datasets:</h2>
-          <ul>
-            {Object.entries(apiData).map(([key, dataset]) => (
-              <li key={key}>
-                <strong>Name:</strong> {dataset.name},
-                <strong>ID:</strong> {dataset.id},
-                <strong>Coverage:</strong> {dataset.datacoverage}
-              </li>
-            ))}
-          </ul>
+          <pre>{JSON.stringify(apiData, null, 2)}</pre>
         </div>
       )}
     </div>
