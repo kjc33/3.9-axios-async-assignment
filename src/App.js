@@ -2,13 +2,12 @@ import React, { useState, useEffect } from "react";
 import DataService from "./api/DataService";
 
 function App() {
-  const [apiData, setApiData] = useState({ results: [] });
+  const [apiData, setApiData] = useState([]);
 
   function apiGet() {
     DataService.get("datasets")
       .then((response) => {
         console.log("Full API Response:", response);
-        console.log("API Data Structure", Object.keys(response.data || {}));
         setApiData(response.data);
       })
       .catch((error) => {
@@ -23,13 +22,18 @@ function App() {
   return (
     <div>
       <h1>Data Service</h1>
-      <button onClick={apiGet}>Load Data</button>
 
       {apiData.results && (
-        <div>
+        <pre>
           <h2>Datasets:</h2>
-          <pre>{JSON.stringify(apiData, null, 2)}</pre>
-        </div>
+            {apiData.results.map((dataset) => (
+              <div key={dataset.id}>
+                <strong>Name:</strong> {dataset.name},
+                <strong>ID:</strong> {dataset.id},
+                <strong>Coverage:</strong> {dataset.datacoverage}
+              </div>
+            ))}
+        </pre>
       )}
     </div>
   );
